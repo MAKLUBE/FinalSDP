@@ -8,6 +8,8 @@ import Services.AccountService;
 import Strategy.ConcreteStrategies.LoanInterest;
 import Strategy.ConcreteStrategies.SavingsInterest;
 import Strategy.Context.BankAccount;
+import Decorator.BonusInterestDecorator;
+import Decorator.TaxInterestDecorator;
 import Strategy.Interface.Interest;
 import Builder.BankAccountBuilder;
 
@@ -113,7 +115,51 @@ public class BankingService {
             return;
         }
 
-        float interest = account.calculateInterest();
+        Interest interestStrategy = account.getInterest();
+
+        System.out.print("Apply tax on interest? (y/n): ");
+        String applyTax = sc.next();
+        if (applyTax.equalsIgnoreCase("y")) {
+            double taxRate;
+            while (true) {
+                System.out.print("Enter tax rate (%): ");
+                if (sc.hasNextDouble()) {
+                    taxRate = sc.nextDouble();
+                    sc.nextLine();
+                    if (taxRate >= 0) {
+                        break;
+                    }
+                    System.out.println("Tax rate cannot be negative.");
+                } else {
+                    System.out.println("Please enter a valid number.");
+                    sc.nextLine();
+                }
+            }
+            interestStrategy = new TaxInterestDecorator(interestStrategy, taxRate);
+        }
+
+        System.out.print("Apply promotional bonus? (y/n): ");
+        String applyBonus = sc.next();
+        if (applyBonus.equalsIgnoreCase("y")) {
+            double bonusRate;
+            while (true) {
+                System.out.print("Enter bonus rate (%): ");
+                if (sc.hasNextDouble()) {
+                    bonusRate = sc.nextDouble();
+                    sc.nextLine();
+                    if (bonusRate >= 0) {
+                        break;
+                    }
+                    System.out.println("Bonus rate cannot be negative.");
+                } else {
+                    System.out.println("Please enter a valid number.");
+                    sc.nextLine();
+                }
+            }
+            interestStrategy = new BonusInterestDecorator(interestStrategy, bonusRate);
+        }
+
+        float interest = interestStrategy.calculate(account.getBalance());
         System.out.println("Account: " + account.getAccountNumber());
         System.out.println("Balance: " + account.getBalance());
         System.out.println("Interest: " + interest);
