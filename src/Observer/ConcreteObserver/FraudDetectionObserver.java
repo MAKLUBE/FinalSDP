@@ -5,7 +5,7 @@ import Strategy.Context.BankAccount;
 
 public class FraudDetectionObserver implements AccountObserver {
 
-    private final float largeBalanceThreshold = 1_000_000f;
+    private final float largeBalanceThreshold = 1_000_000_000f;
 
     @Override
     public void update(BankAccount account, String event) {

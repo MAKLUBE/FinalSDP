@@ -138,28 +138,32 @@ public class BankingService {
             interestStrategy = new TaxInterestDecorator(interestStrategy, taxRate);
         }
 
-        System.out.print("Apply promotional bonus? (y/n): ");
-        String applyBonus = sc.next();
-        if (applyBonus.equalsIgnoreCase("y")) {
-            double bonusRate;
-            while (true) {
-                System.out.print("Enter bonus rate (%): ");
-                if (sc.hasNextDouble()) {
-                    bonusRate = sc.nextDouble();
-                    sc.nextLine();
-                    if (bonusRate >= 0) {
-                        break;
+        if (account.getInterest() instanceof SavingsInterest) {
+            System.out.print("Apply promotional bonus? (y/n): ");
+            String applyBonus = sc.next();
+            if (applyBonus.equalsIgnoreCase("y")) {
+                double bonusRate;
+                while (true) {
+                    System.out.print("Enter bonus rate (%): ");
+                    if (sc.hasNextDouble()) {
+                        bonusRate = sc.nextDouble();
+                        sc.nextLine();
+                        if (bonusRate >= 0) {
+                            break;
+                        }
+                        System.out.println("Bonus rate cannot be negative.");
+                    } else {
+                        System.out.println("Please enter a valid number.");
+                        sc.nextLine();
                     }
-                    System.out.println("Bonus rate cannot be negative.");
-                } else {
-                    System.out.println("Please enter a valid number.");
-                    sc.nextLine();
                 }
+                interestStrategy = new BonusInterestDecorator(interestStrategy, bonusRate);
             }
-            interestStrategy = new BonusInterestDecorator(interestStrategy, bonusRate);
         }
 
+
         float interest = interestStrategy.calculate(account.getBalance());
+
         System.out.println("Account: " + account.getAccountNumber());
         System.out.println("Balance: " + account.getBalance());
         System.out.println("Interest: " + interest);
@@ -167,6 +171,7 @@ public class BankingService {
 
         subject.notifyObservers(account, "INTEREST_CALCULATED");
     }
+
 
     public void listAccounts() {
         if (!accountService.hasAccounts()) {
@@ -233,6 +238,7 @@ public class BankingService {
                 sc.nextLine();
             }
         }
+
 
         System.out.print("Enter term in months: ");
         int termMonths = sc.nextInt();
