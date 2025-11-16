@@ -1,5 +1,5 @@
 import Services.AccountService;
-import AccService.BankingService;
+import Services.BankingService;
 import Observer.Context.AccountSubject;
 import Observer.ConcreteObserver.NotificationObserver;
 import Observer.ConcreteObserver.FraudDetectionObserver;

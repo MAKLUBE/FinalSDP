@@ -1,4 +1,4 @@
-package AccService;
+package Services;
 
 import Builder.Loan.LoanAgreement;
 import Builder.Loan.LoanAgreementBuilder;
@@ -145,6 +145,11 @@ public class BankingService {
         BankAccount account = accountService.findAccountByNumber(number);
         if (account == null) {
             System.out.println("Account not found.");
+            return;
+        }
+
+        if (!(account.getInterest() instanceof LoanInterest)) {
+            System.out.println("This account is not a loan account. You can create a loan agreement only for loan accounts.");
             return;
         }
 
